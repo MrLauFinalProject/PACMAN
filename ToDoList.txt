@@ -6,19 +6,16 @@
   +
   +
   +
--Player.java
-  +movementSound
+-public abstract class MoveableEntity{}
+  + turn(String direction);
+  + detectWalls();
+  + moveSpeed(int speed);
+  + 
+-public class Player implements MoveableEntity
+  + movementSound(); 
+  + eat();
   +
-  +
--MoveableEntity.java
-  +
-  +
-  +
--Player
-  +
-  +
-  +
--Ghost
+-public class Ghost implements MoveableEntity
   +
   +
   +
