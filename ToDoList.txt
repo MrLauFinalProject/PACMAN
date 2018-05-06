@@ -10,12 +10,15 @@
   +movementSound
   +
   +
--Ghost.java
+-MoveableEntity.java
   +
   +
   +
--Driver.java
+-Player
   +
   +
   +
-
+-Ghost
+  +
+  +
+  +
