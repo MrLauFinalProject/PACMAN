@@ -5,7 +5,7 @@
 -Food.java
   +
   +
-  +
+  + 
 -public abstract class MoveableEntity{}
   + turn(String direction);
   + detectWalls();
