@@ -11,11 +11,11 @@
   + detectWalls();
   + moveSpeed(int speed);
   + 
--public class Player implements MoveableEntity
+-public class Player extends MoveableEntity
   + movementSound(); 
   + eat();
   +
--public class Ghost implements MoveableEntity
+-public class Ghost extends MoveableEntity
   +
   +
   +
