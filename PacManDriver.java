@@ -1,4 +1,3 @@
-/* Drew Schuster */
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
@@ -7,267 +6,228 @@ import java.awt.*;
 import java.util.*;
 import java.lang.*;
 
-/* This class contains the entire game... most of the game logic is in the Map class but this
-   creates the gui and captures mouse and keyMap input, as well as controls the game states */
-public class PacManDriver extends JApplet implements MouseListener, KeyListener
+// This class has the gui creation and the keyboard and mouse listeners 
+public class Pacman extends JApplet implements MouseListener, KeyListener
 { 
 
-  /* These timers are used to kill title, game over, and victory screens after a set idle period (5 seconds)*/
-  long titleTimer = -1;
+  // this is for timing the gameover and win screens
+  long mainScreenTimer = -1;
   long timer = -1;
 
-  /* Create a new Map */
-  Map b=new Map(); 
 
-  /* This timer is used to do request new frames be drawn*/
+  Board board = new Board(); 
+
+  //framerate
   javax.swing.Timer frameTimer;
  
-
-  /* This constructor creates the entire game essentially */   
-  public PacManDriver()
+   
+  public Pacman()
   {
-    b.requestFocus();
+	  board.requestFocus();
 
-    /* Create and set up window frame*/
-    JFrame f=new JFrame(); 
-    f.setSize(420,460);
+    JFrame frame = new JFrame(); 
+    frame.setSize(420,460);
 
-    /* Add the Map to the frame */
-    f.add(b,BorderLayout.CENTER);
+    frame.add(board,BorderLayout.CENTER);
 
-    /*Set listeners for mouse actions and button clicks*/
-    b.addMouseListener(this);  
-    b.addKeyListener(this);  
+    board.addMouseListener(this);  
+    board.addKeyListener(this);  
 
-    /* Make frame visible, disable resizing */
-    f.setVisible(true);
-    f.setResizable(false);
+    frame.setVisible(true);
+    frame.setResizable(false);
 
-    /* Set the New flag to 1 because this is a new game */
-    b.New=1;
+    board.New=1;
 
-    /* Manually call the first frameStep to initialize the game. */
+    // this starts the first frame of the game which starts the game
     stepFrame(true);
 
-    /* Create a timer that calls stepFrame every 30 milliseconds */
     frameTimer = new javax.swing.Timer(30,new ActionListener()
       {
         public void actionPerformed(ActionEvent e)
         {
           stepFrame(false);
-        }
-      });
+        }});
 
-    /* Start the timer */
     frameTimer.start();
 
-    b.requestFocus();
+    board.requestFocus();
   }
 
-  /* This repaint function repaints only the parts of the screen that may have changed.
-     Namely the area around every player ghost and the menu bars
-  */
+  // the idea for this function was found online and it basically updates the area around the screen where something might have changed instead of the whole screen
   public void repaint()
   {
-    if (b.player.teleport)
-    {
-      b.repaint(b.player.lastX-20,b.player.lastY-20,80,80);
-      b.player.teleport=false;
+    if (board.player.teleport){
+    	board.repaint(board.player.lastX-20,board.player.lastY-20,80,80);
+    	board.player.teleport=false;
     }
-    b.repaint(0,0,600,20);
-    b.repaint(0,420,600,40);
-    b.repaint(b.player.x-20,b.player.y-20,80,80);
-    b.repaint(b.ghost1.x-20,b.ghost1.y-20,80,80);
-    b.repaint(b.ghost2.x-20,b.ghost2.y-20,80,80);
-    b.repaint(b.ghost3.x-20,b.ghost3.y-20,80,80);
-    b.repaint(b.ghost4.x-20,b.ghost4.y-20,80,80);
+    board.repaint(0,0,600,20);
+    board.repaint(0,420,600,40);
+    board.repaint(board.player.x-20,board.player.y-20,80,80);
+    board.repaint(board.ghost1.x-20,board.ghost1.y-20,80,80);
+    board.repaint(board.ghost2.x-20,board.ghost2.y-20,80,80);
+    board.repaint(board.ghost3.x-20,board.ghost3.y-20,80,80);
+    board.repaint(board.ghost4.x-20,board.ghost4.y-20,80,80);
   }
 
-  /* Steps the screen forward one frame */
-  public void stepFrame(boolean New)
-  {
-    /* If we aren't on a special screen than the timers can be set to -1 to disable them */
-    if (!b.titleScreen && !b.winScreen && !b.overScreen)
-    {
+  public void stepFrame(boolean New){
+	  
+	
+    if (!board.titleScreen && !board.winScreen && !board.overScreen){
       timer = -1;
-      titleTimer = -1;
+      mainScreenTimer = -1;
     }
 
-    /* If we are playing the dying animation, keep advancing frames until the animation is complete */
-    if (b.dying>0)
-    {
-      b.repaint();
+    if (board.dying>0){
+      board.repaint();
       return;
     }
 
-    /* New can either be specified by the New parameter in stepFrame function call or by the state
-       of b.New.  Update New accordingly */ 
-    New = New || (b.New !=0) ;
+ 
+    New = New || (board.New !=0) ;
 
-    /* If this is the title screen, make sure to only stay on the title screen for 5 seconds.
-       If after 5 seconds the user hasn't started a game, start up demo mode */
-    if (b.titleScreen)
-    {
-      if (titleTimer == -1)
-      {
-        titleTimer = System.currentTimeMillis();
+
+    if (board.titleScreen){
+      if (mainScreenTimer == -1){
+        mainScreenTimer = System.currentTimeMillis();
       }
 
       long currTime = System.currentTimeMillis();
-      if (currTime - titleTimer >= 5000)
-      {
-        b.titleScreen = false;
-        titleTimer = -1;
+      if (currTime - mainScreenTimer >= 5000) {//if the user dosnt start the game in 5 seconds it starts the demo screen
+        board.titleScreen = false;
+        board.demo = true;
+        mainScreenTimer = -1;
       }
-      b.repaint();
+      board.repaint();
       return;
     }
  
-    /* If this is the win screen or game over screen, make sure to only stay on the screen for 5 seconds.
-       If after 5 seconds the user hasn't pressed a key, go to title screen */
-    else if (b.winScreen || b.overScreen)
-    {
-      if (timer == -1)
-      {
+
+    else if (board.winScreen || board.overScreen){
+      if (timer == -1) {
         timer = System.currentTimeMillis();
       }
 
       long currTime = System.currentTimeMillis();
-      if (currTime - timer >= 5000)
-      {
-        b.winScreen = false;
-        b.overScreen = false;
-        b.titleScreen = true;
+      if (currTime - timer >= 5000){
+        board.winScreen = false;
+        board.overScreen = false;
+        board.titleScreen = true;
         timer = -1;
       }
-      b.repaint();
+      board.repaint();
       return;
     }
 
 
-    /* If we have a normal game state, move all pieces and update pellet status */
-    if (!New)
-    {
-      
-        b.player.move();
-      
-      /* Also move the ghosts, and update the pellet states */
-      b.ghost1.move(); 
-      b.ghost2.move(); 
-      b.ghost3.move(); 
-      b.ghost4.move(); 
-      b.player.updatePellet();
-      b.ghost1.updatePellet();
-      b.ghost2.updatePellet();
-      b.ghost3.updatePellet();
-      b.ghost4.updatePellet();
+    if (!New){
+
+      if (board.demo){
+        board.player.demoMove();
+      }
+      else{
+        board.player.move();
+      }
+
+      /* Also move the ghosts, and update the food states */
+      board.ghost1.chasePacMan(); 
+      board.ghost2.chasePacMan(); 
+      board.ghost3.chasePacMan(); 
+      board.ghost4.chasePacMan(); 
+      board.player.updatePellet();
+      board.ghost1.updatePellet();
+      board.ghost2.updatePellet();
+      board.ghost3.updatePellet();
+      board.ghost4.updatePellet();
     }
 
-    /* We either have a new game or the user has died, either way we have to reset the Map */
-    if (b.stopped || New)
-    {
-      /*Temporarily stop advancing frames */
+    // We reset the board here 
+    if (board.stopped || New){
       frameTimer.stop();
 
-      /* If user is dying ... */
-      while (b.dying >0)
-      {
+      while (board.dying >0){
         /* Play dying animation. */
         stepFrame(false);
       }
 
-      /* Move all game elements back to starting positions and orientations */
-      b.player.currDirection='L';
-      b.player.direction='L';
-      b.player.desiredDirection='L';
-      b.player.x = 200;
-      b.player.y = 300;
-      b.ghost1.x = 180;
-      b.ghost1.y = 180;
-      b.ghost2.x = 200;
-      b.ghost2.y = 180;
-      b.ghost3.x = 220;
-      b.ghost3.y = 180;
-      b.ghost4.x = 220;
-      b.ghost4.y = 180;
+      // resets the players to starting positions
+      board.player.currDirection='L';
+      board.player.direction='L';
+      board.player.desiredDirection='L';
+      board.player.x = 200;
+      board.player.y = 300;
+      board.ghost1.x = 180;
+      board.ghost1.y = 180;
+      board.ghost2.x = 200;
+      board.ghost2.y = 180;
+      board.ghost3.x = 220;
+      board.ghost3.y = 180;
+      board.ghost4.x = 220;
+      board.ghost4.y = 180;
 
-      /* Advance a frame to display main state*/
-      b.repaint(0,0,600,600);
+      board.repaint(0,0,600,600);
 
-      /*Start advancing frames once again*/
-      b.stopped=false;
+      board.stopped=false;
       frameTimer.start();
     }
-    /* Otherwise we're in a normal state, advance one frame*/
-    else
-    {
+    else{
       repaint(); 
     }
   }  
 
-  /* Handles user key presses*/
-  public void keyPressed(KeyEvent e) 
-  {
-    /* Pressing a key in the title screen starts a game */
-    if (b.titleScreen)
-    {
-      b.titleScreen = false;
+  // key listener class
+  public void keyPressed(KeyEvent e){
+    if (board.titleScreen) {//any key is pressed
+      board.titleScreen = false;//end title screen and go into game
       return;
     }
-    /* Pressing a key in the win screen or game over screen goes to the title screen */
-    else if (b.winScreen || b.overScreen)
+    
+    else if (board.winScreen || board.overScreen)//if your in win or game over
     {
-      b.titleScreen = true;
-      b.winScreen = false;
-      b.overScreen = false;
+      board.titleScreen = true;//go to title screen
+      board.winScreen = false;
+      board.overScreen = false;
+      return;
+    }
+    else if (board.demo){
+      board.demo=false;
+      
+      board.New=1;
       return;
     }
 
-    /* Otherwise, key presses control the player! */ 
-    switch(e.getKeyCode())
-    {
+    switch(e.getKeyCode()){//change direction based on key clicks
       case KeyEvent.VK_LEFT:
-       b.player.desiredDirection='L';
+       board.player.desiredDirection='L';
        break;     
       case KeyEvent.VK_RIGHT:
-       b.player.desiredDirection='R';
+       board.player.desiredDirection='R';
        break;     
       case KeyEvent.VK_UP:
-       b.player.desiredDirection='U';
+       board.player.desiredDirection='U';
        break;     
       case KeyEvent.VK_DOWN:
-       b.player.desiredDirection='D';
+       board.player.desiredDirection='D';
        break;     
     }
 
     repaint();
   }
 
-  /* This function detects user clicks on the menu items on the bottom of the screen */
   public void mousePressed(MouseEvent e){
-    if (b.titleScreen || b.winScreen || b.overScreen)
-    {
-      /* If we aren't in the game where a menu is showing, ignore clicks */
+    if (board.titleScreen || board.winScreen || board.overScreen){
       return;
     }
 
-    /* Get coordinates of click */
     int x = e.getX();
     int y = e.getY();
-    if ( 400 <= y && y <= 460)
-    {
-      if ( 100 <= x && x <= 150)
-      {
-        /* New game has been clicked */
-        b.New = 1;
+    if ( 400 <= y && y <= 460){
+      if ( 100 <= x && x <= 150){
+        board.New = 1;
       }
-      else if (180 <= x && x <= 300)
-      {
-        /* Clear high scores has been clicked */
-        b.clearHighScores();
+      else if (180 <= x && x <= 300){
+        board.clearHighScores();
       }
-      else if (350 <= x && x <= 420)
-      {
+      else if (350 <= x && x <= 420){
         /* Exit has been clicked */
         System.exit(0);
       }
@@ -282,9 +242,9 @@ public class PacManDriver extends JApplet implements MouseListener, KeyListener
   public void keyReleased(KeyEvent e){}
   public void keyTyped(KeyEvent e){}
   
-  /* Main function simply creates a new PacManDriver instance*/
+  
   public static void main(String [] args)
   {
-      PacManDriver c = new PacManDriver();
-  } 
+      Pacman temp = new Pacman();
+  }
 }
