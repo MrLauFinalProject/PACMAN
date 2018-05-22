@@ -6,34 +6,40 @@ import javax.sound.sampled.Clip;
 import javax.swing.JOptionPane;
 
 public class Sounds {
-  public static void main(String[] args) {
+	
+	static AudioPlayer thePlayer;
+  public static void main(String[] args){
 	  
-	  playsound("nomnom.WAV");
+	  playOnce("nomnom.WAV");
   }
-  public static void playsound(String sound){
+  public static void playContinous(String sound){
 	
 	  
-	  
 	  try{
 		  AudioData data = new AudioStream(new FileInputStream(sound)).getData();
 		  ContinuousAudioDataStream audio = new ContinuousAudioDataStream(data);
-		  AudioPlayer.player.start(audio);
+		  thePlayer.player.start(audio);
 		  
 	  }catch(Exception e){
 		  
 		  System.out.println("Error");
 	  }
   }
-  public void stopSound(String sound){
+  public static void playOnce(String sound){
 
+	  InputStream music;
 	  try{
-		  AudioData data = new AudioStream(new FileInputStream(sound)).getData();
-		  ContinuousAudioDataStream audio = new ContinuousAudioDataStream(data);
-		  AudioPlayer.player.stop(audio);
+		  music = new FileInputStream(new File(sound));
+		  AudioStream audio = new AudioStream(music);
+		  thePlayer.player.start(audio);
 		  
 	  }catch(Exception e){
 		  
 		  System.out.println("Error");
 	  }
+  }
+  public static void stopAudio(){
+	    
+	  thePlayer.player.stop(); 
   }
 }
