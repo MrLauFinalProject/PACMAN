@@ -113,7 +113,12 @@ class Player extends Mover
      } 
      return newDirection;
   }
-
+  public int getPlayerX(){
+	  return x;
+  }
+  public int getPlayerY(){
+	  return y;
+  }
   public boolean isChoiceDest()
   {
     if (  x%gridSize==0&& y%gridSize==0 )
@@ -260,11 +265,10 @@ class Player extends Mover
     }
   } 
   public boolean isValidDest(int x, int y)
-  {
-    
+  { 
 	// is the new location within play area and not a wall
-    if ((((x)%20==0) || ((y)%20)==0) && 20<=x && x<400 && 20<= y && y<400 && map[x/20-1][y/20-1] ){
-      if(System.currentTimeMillis() - lastTime > 700) {
+    if ((((x)%20==0) || ((y)%20)==0) && 20<=x && x<400 && 20<= y && y<400 && (map[x/20-1][y/20-1]) != 0 ){
+      if(System.currentTimeMillis() - lastTime > 500) {
     	audio.playOnce("nomnom.WAV");
     	lastTime = System.currentTimeMillis();
       }
