@@ -47,7 +47,7 @@ public class Board extends JPanel
   int numLives=2;
 
   /*Contains the game map, passed to player and ghosts */
-  boolean[][] map;
+  int[][] map;
 
   /* Contains the map of all foods*/
   boolean[][] foods;
@@ -137,13 +137,13 @@ public class Board extends JPanel
   public void reset()
   {
     numLives=2;
-    map = new boolean[20][20];
+    map = new int[20][20];
     foods = new boolean[20][20];
 
     /* Clear map and foods arrays */
     for(int i=0;i<20;i++){
       for(int j=0;j<20;j++){
-        map[i][j]=true;
+        map[i][j]=1;
         foods[i][j]=true;
       }
     }
@@ -169,7 +169,7 @@ public class Board extends JPanel
     {
       for (int j=y/gridSize;j<y/gridSize+height/gridSize;j++)
       {
-        map[i-1][j-1]=false;
+        map[i-1][j-1]=0;
         foods[i-1][j-1]=false;
       }
     }
@@ -429,7 +429,7 @@ public class Board extends JPanel
       drawLives(g);
       player.updatemap(map);
       // player cant enter ghost box
-      player.map[9][7]=false; 
+      player.map[9][7]=0; 
       ghost1.updatemap(map);
       ghost2.updatemap(map);
       ghost3.updatemap(map);
