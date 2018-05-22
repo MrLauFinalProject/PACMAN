@@ -1,290 +1,278 @@
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+class Player extends Mover
+{
+  
+	Sounds audio;
+  char direction;//demo mode use only
+  char currDirection;//normal play
+  char desiredDirection;//normal play
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+  // when foods eaten is = total pelets end the game
+  int foodsEaten;
 
-public class Player extends Mover{
-	  /* Direction is used in demoMode, currDirection and desiredDirection are used in non demoMode*/ 
-	  char direction;
-	  char currDirection;
-	  char desiredDirection;
+  long lastTime;
+  
+  int lastX;
+  int lastY;
+ //current location
+  int x;
+  int y;
+ 
+  //used to tell which food pacman is on top of
+  int foodX;
+  int foodY;
 
-	  /* Keeps track of pellets eaten to determine end of game */
-	  int pelletsEaten;
+  //for teleport tunnels
+  boolean teleport;
+  
+  //pacman is dead or facing wall
+  boolean stopped = false;
 
-	  /* Last location */
-	  int lastX;
-	  int lastY;
-	 
-	  /* Current location */
-	  int x;
-	  int y;
-	 
-	  /* Which pellet the pacman is on top of */
-	  int pelletX;
-	  int pelletY;
+  //initial pos and orientation
+  public Player(int x, int y)
+  {
 
-	  /* teleport is true when travelling through the teleport tunnels*/
-	  boolean teleport;
-	  
-	  /* Stopped is set when the pacman is not moving or has been killed */
-	  boolean stopped = false;
-
-	  /* Constructor places pacman in initial location and orientation */
-	  public Player(int x, int y)
-	  {
-
-	    teleport=false;
-	    pelletsEaten=0;
-	    pelletX = x/gridSize-1;
-	    pelletY = y/gridSize-1;
-	    this.lastX=x;
-	    this.lastY=y;
-	    this.x = x;
-	    this.y = y;
-	    currDirection='L';
-	    desiredDirection='L';
-	  }
+    teleport=false;
+    foodsEaten=0;
+    foodX = x/gridSize-1;
+    foodY = y/gridSize-1;
+    this.lastX=x;
+    this.lastY=y;
+    this.x = x;
+    this.y = y;
+    currDirection='L';
+    desiredDirection='L';
+    lastTime = System.currentTimeMillis();
+  }
 
 
-	  /* This function is used for demoMode.  It is copied from the Ghost class.  See that for comments */
-	  public char newDirection()
-	  { 
-	     int random;
-	     char backwards='U';
-	     int newX=x,newY=y;
-	     int lookX=x,lookY=y;
-	     Set<Character> set = new HashSet<Character>();
-	    switch(direction)
-	    {
-	      case 'L':
-	         backwards='R';
-	         break;     
-	      case 'R':
-	         backwards='L';
-	         break;     
-	      case 'U':
-	         backwards='D';
-	         break;     
-	      case 'D':
-	         backwards='U';
-	         break;     
-	    }
-	     char newDirection = backwards;
-	     while (newDirection == backwards || !isValidDest(lookX,lookY))
-	     {
-	       if (set.size()==3)
-	       {
-	         newDirection=backwards;
-	         break;
-	       }
-	       newX=x;
-	       newY=y;
-	       lookX=x;
-	       lookY=y;
-	       random = (int)(Math.random()*4) + 1;
-	       if (random == 1)
-	       {
-	         newDirection = 'L';
-	         newX-=increment; 
-	         lookX-= increment;
-	       }
-	       else if (random == 2)
-	       {
-	         newDirection = 'R';
-	         newX+=increment; 
-	         lookX+= gridSize;
-	       }
-	       else if (random == 3)
-	       {
-	         newDirection = 'U';
-	         newY-=increment; 
-	         lookY-=increment;
-	       }
-	       else if (random == 4)
-	       {
-	         newDirection = 'D';
-	         newY+=increment; 
-	         lookY+=gridSize;
-	       }
-	       if (newDirection != backwards)
-	       {
-	         set.add(new Character(newDirection));
-	       }
-	     } 
-	     return newDirection;
-	  }
+  //demo use only class
+  public char newDirection()
+  { 
+     int random;
+     char backwards='U';
+     int newX=x,newY=y;
+     int lookX=x,lookY=y;
+     Set<Character> set = new HashSet<Character>();
+    switch(direction)
+    {
+      case 'L':
+         backwards='R';
+         break;     
+      case 'R':
+         backwards='L';
+         break;     
+      case 'U':
+         backwards='D';
+         break;     
+      case 'D':
+         backwards='U';
+         break;     
+    }
+     char newDirection = backwards;
+     while (newDirection == backwards || !isValidDest(lookX,lookY))
+     {
+       if (set.size()==3)
+       {
+         newDirection=backwards;
+         break;
+       }
+       newX=x;
+       newY=y;
+       lookX=x;
+       lookY=y;
+       random = (int)(Math.random()*4) + 1;
+       if (random == 1)
+       {
+         newDirection = 'L';
+         newX-=FPS; 
+         lookX-= FPS;
+       }
+       else if (random == 2)
+       {
+         newDirection = 'R';
+         newX+=FPS; 
+         lookX+= gridSize;
+       }
+       else if (random == 3)
+       {
+         newDirection = 'U';
+         newY-=FPS; 
+         lookY-=FPS;
+       }
+       else if (random == 4)
+       {
+         newDirection = 'D';
+         newY+=FPS; 
+         lookY+=gridSize;
+       }
+       if (newDirection != backwards)
+       {
+         set.add(new Character(newDirection));
+       }
+     } 
+     return newDirection;
+  }
 
-	  /* This function is used for demoMode.  It is copied from the Ghost class.  See that for comments */
-	  public boolean isChoiceDest()
-	  {
-	    if (  x%gridSize==0&& y%gridSize==0 )
-	    {
-	      return true;
-	    }
-	    return false;
-	  }
+  public boolean isChoiceDest()
+  {
+    if (  x%gridSize==0&& y%gridSize==0 )
+    {
+      return true;
+    }
+    return false;
+  }
 
-	  /* This function is used for demoMode.  It is copied from the Ghost class.  See that for comments */
-	  public void demoMove()
-	  {
-	    lastX=x;
-	    lastY=y;
-	    if (isChoiceDest())
-	    {
-	      direction = newDirection();
-	    }
-	    switch(direction)
-	    {
-	      case 'L':
-	         if ( isValidDest(x-increment,y))
-	         {
-	           x -= increment;
-	         }
-	         else if (y == 9*gridSize && x < 2 * gridSize)
-	         {
-	           x = max - gridSize*1;
-	           teleport = true; 
-	         }
-	         break;     
-	      case 'R':
-	         if ( isValidDest(x+gridSize,y))
-	         {
-	           x+= increment;
-	         }
-	         else if (y == 9*gridSize && x > max - gridSize*2)
-	         {
-	           x = 1*gridSize;
-	           teleport=true;
-	         }
-	         break;     
-	      case 'U':
-	         if ( isValidDest(x,y-increment))
-	           y-= increment;
-	         break;     
-	      case 'D':
-	         if ( isValidDest(x,y+gridSize))
-	           y+= increment;
-	         break;     
-	    }
-	    currDirection = direction;
-	    frameCount ++;
-	  }
+  public void demoMove()
+  {
+    lastX=x;
+    lastY=y;
+    if (isChoiceDest())
+    {
+      direction = newDirection();
+    }
+    switch(direction)
+    {
+      case 'L':
+         if ( isValidDest(x-FPS,y))
+         {
+           x -= FPS;
+         }
+         else if (y == 9*gridSize && x < 2 * gridSize)
+         {
+           x = max - gridSize*1;
+           teleport = true; 
+         }
+         break;     
+      case 'R':
+         if ( isValidDest(x+gridSize,y))
+         {
+           x+= FPS;
+         }
+         else if (y == 9*gridSize && x > max - gridSize*2)
+         {
+           x = 1*gridSize;
+           teleport=true;
+         }
+         break;     
+      case 'U':
+         if ( isValidDest(x,y-FPS))
+           y-= FPS;
+         break;     
+      case 'D':
+         if ( isValidDest(x,y+gridSize))
+           y+= FPS;
+         break;     
+    }
+    currDirection = direction;
+    frameCount ++;
+  }
 
-	  /* The move function moves the pacman for one frame in non demo mode */
-	  public void move(){
-		
-		
-	    int gridSize=20;
-	    lastX=x;
-	    lastY=y;
-	     
-	    /* Try to turn in the direction input by the user */
-	    /*Can only turn if we're in center of a grid*/
-	    if (x %20==0 && y%20==0 ||
-	       /* Or if we're reversing*/
-	       (desiredDirection=='L' && currDirection=='R')  ||
-	       (desiredDirection=='R' && currDirection=='L')  ||
-	       (desiredDirection=='U' && currDirection=='D')  ||
-	       (desiredDirection=='D' && currDirection=='U')
-	       )
-	    {
-	      switch(desiredDirection)
-	      {
-	        case 'L':
-	           if ( isValidDest(x-increment,y))
-	             x -= increment;
-	           break;     
-	        case 'R':
-	           if ( isValidDest(x+gridSize,y))
-	             x+= increment;
-	           break;     
-	        case 'U':
-	           if ( isValidDest(x,y-increment))
-	             y-= increment;
-	           break;     
-	        case 'D':
-	           if ( isValidDest(x,y+gridSize))
-	             y+= increment;
-	           break;     
-	      }
-	    }
-	    /* If we haven't moved, then move in the direction the pacman was headed anyway */
-	    if (lastX==x && lastY==y)
-	    {
-	      switch(currDirection)
-	      {
-	        case 'L':
-	           if ( isValidDest(x-increment,y))
-	             x -= increment;
-	           else if (y == 9*gridSize && x < 2 * gridSize)
-	           {
-	             x = max - gridSize*1;
-	             teleport = true; 
-	           }
-	           break;     
-	        case 'R':
-	           if ( isValidDest(x+gridSize,y))
-	             x+= increment;
-	           else if (y == 9*gridSize && x > max - gridSize*2)
-	           {
-	             x = 1*gridSize;
-	             teleport=true;
-	           }
-	           break;     
-	        case 'U':
-	           if ( isValidDest(x,y-increment))
-	             y-= increment;
-	           break;     
-	        case 'D':
-	           if ( isValidDest(x,y+gridSize))
-	             y+= increment;
-	           break;     
-	      }
-	    }
+  //moves pacman one frame
+  public void move()
+  {
+    int gridSize=20;
+    lastX=x;
+    lastY=y;
+     
+ 
+    if (x %20==0 && y%20==0 ||
+       (desiredDirection=='L' && currDirection=='R')  ||
+       (desiredDirection=='R' && currDirection=='L')  ||
+       (desiredDirection=='U' && currDirection=='D')  ||
+       (desiredDirection=='D' && currDirection=='U')
+       )
+    {
+      switch(desiredDirection)
+      {
+        case 'L':
+           if (this.isValidDest(x-FPS,y))
+             x -= FPS;
+           break;     
+        case 'R':
+           if ( this.isValidDest(x+gridSize,y))
+             x+= FPS;
+           break;     
+        case 'U':
+           if ( this.isValidDest(x,y-FPS))
+             y-= FPS;
+           break;     
+        case 'D':
+           if ( this.isValidDest(x,y+gridSize))
+             y+= FPS;
+           break;     
+      }
+    }
+    if (lastX==x && lastY==y)
+    {
+      switch(currDirection)
+      {
+        case 'L':
+           if ( this.isValidDest(x-FPS,y))
+             x -= FPS;
+           else if (y == 9*gridSize && x < 2 * gridSize)
+           {
+             x = max - gridSize*1;
+             teleport = true; 
+           }
+           break;     
+        case 'R':
+           if ( this.isValidDest(x+gridSize,y))
+             x+= FPS;
+           else if (y == 9*gridSize && x > max - gridSize*2)
+           {
+             x = 1*gridSize;
+             teleport=true;
+           }
+           break;     
+        case 'U':
+           if ( this.isValidDest(x,y-FPS))
+             y-= FPS;
+           break;     
+        case 'D':
+           if ( this.isValidDest(x,y+gridSize))
+             y+= FPS;
+           break;     
+      }
+    }
 
-	    /* If we did change direction, update currDirection to reflect that */
-	    else
-	    {
-	      currDirection=desiredDirection;
-	    }
-	   
-	    /* If we didn't move at all, set the stopped flag */    
-	    if (lastX == x && lastY==y)
-	      stopped=true;
-	  
-	    /* Otherwise, clear the stopped flag and increment the frameCount for animation purposes*/
-	    else
-	    {
-	      stopped=false;
-	      frameCount ++;
-	    }
-	  }
+    else
+    {
+      currDirection=desiredDirection;
+    }
+   
+    if (lastX == x && lastY==y)
+      stopped=true;
+  
+    else
+    {
+      stopped=false;
+      frameCount ++;
+    }
+  }
 
-	  /* Update what pellet the pacman is on top of */
-	  public void updatePellet()
-	  {
-	    if (x%gridSize ==0 && y%gridSize == 0)
-	    {
-	    pelletX = x/gridSize-1;
-	    pelletY = y/gridSize-1;
-	    }
-	  }
-	  public static void playsound(File sound){
-		  
-		  try{
-			  
-			  Clip clip = AudioSystem.getClip();
-			  clip.open(AudioSystem.getAudioInputStream(sound));
-			  clip.start();
-			  
-			  Thread.sleep(clip.getMicrosecondLength()/1000);
-			  
-		  }catch(Exception e)
-		  {
-			  
-		  }
-	  }
-	}
+  public void updatefood()//pacman ate the food
+  {
+    if (x%gridSize ==0 && y%gridSize == 0)
+    {
+    foodX = x/gridSize-1;
+    foodY = y/gridSize-1;
+    }
+  } 
+  public boolean isValidDest(int x, int y)
+  {
+    
+	// is the new location within play area and not a wall
+    if ((((x)%20==0) || ((y)%20)==0) && 20<=x && x<400 && 20<= y && y<400 && map[x/20-1][y/20-1] ){
+      if(System.currentTimeMillis() - lastTime > 700) {
+    	audio.playOnce("nomnom.WAV");
+    	lastTime = System.currentTimeMillis();
+      }
+    	return true;
+    }
+    else {
+    	return false;
+    }
+    
+  }
+}
