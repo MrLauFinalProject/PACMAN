@@ -1,85 +1,48 @@
 import java.util.HashSet;
 import java.util.Set;
 
-public class Ghost extends Mover
+class Ghost extends Mover//currently ramdom
 { 
-	//Is the ghost chasing pacman or being chased???
-	boolean scared = false;
-  /* Direction ghost is heading */
+
+
+	Player pac = new Player(200, 300);
+	
   char direction;
 
-  /* Last ghost location*/
   int lastX;
   int lastY;
 
-  /* Current ghost location */
   int x;
   int y;
 
-  /* The pellet the ghost is on top of */
-  int pelletX,pelletY;
+  int foodX,foodY;
 
-  /* The pellet the ghost was last on top of */
-  int lastPelletX,lastPelletY;
+  int lastfoodX,lastfoodY;
 
-  /*Constructor places ghost and updates states*/
   public Ghost(int x, int y)
   {
     direction='L';
-    pelletX=x/gridSize-1;
-    pelletY=x/gridSize-1;
-    lastPelletX=pelletX;
-    lastPelletY=pelletY;
+    foodX=x/gridSize-1;
+    foodY=x/gridSize-1;
+    lastfoodX=foodX;
+    lastfoodY=foodY;
     this.lastX = x;
     this.lastY = y;
     this.x = x;
     this.y = y;
   }
 
-  public void beingChased(){
-	  lastX=x;
-	    lastY=y;
-	 
-	    /* If we can make a decision, pick a new direction randomly */
-	    if (isChoiceDest())
-	    {
-	      direction = newDirection();
-	    }
-	    
-	    /* If that direction is valid, move that way */
-	    switch(direction)
-	    {
-	      case 'L':
-	         if ( isValidDest(x-increment,y))
-	           x -= increment;
-	         break;     
-	      case 'R':
-	         if ( isValidDest(x+gridSize,y))
-	           x+= increment;
-	         break;     
-	      case 'U':
-	         if ( isValidDest(x,y-increment))
-	           y-= increment;
-	         break;     
-	      case 'D':
-	         if ( isValidDest(x,y+gridSize))
-	           y+= increment;
-	         break;     
-	    }
-	  
-  }
-  /* update pellet status */
-  public void updatePellet()
+  public void updatefood()//makes it so that the ghosts can not eat foods. if removed the ghosts also eat the foods
   {
     int tempX,tempY;
     tempX = x/gridSize-1;
     tempY = y/gridSize-1;
-    if (tempX != pelletX || tempY != pelletY)
+    if (tempX != foodX || tempY != foodY)
     {
-      lastPelletX = pelletX;
-      lastPelletY = pelletY;
-      pelletX=tempX;
-      pelletY = tempY;
+      lastfoodX = foodX;
+      lastfoodY = foodY;
+      foodX=tempX;
+      foodY = tempY;
     }
      
   } 
@@ -98,10 +61,11 @@ public class Ghost extends Mover
   public char newDirection()
   { 
     int random;
-    char backwards='U';
-    int newX=x,newY=y;
-    int lookX=x,lookY=y;
+    char backwards = 'U';
+    int newX = x,newY = y;
+    int lookX = x,lookY = y;
     Set<Character> set = new HashSet<Character>();
+    
     switch(direction)
     {
       case 'L':
@@ -139,26 +103,26 @@ public class Ghost extends Mover
       if (random == 1)
       {
         newDirection = 'L';
-        newX-=increment; 
-        lookX-= increment;
+        newX -= FPS; 
+        lookX -= FPS;
       }
       else if (random == 2)
       {
         newDirection = 'R';
-        newX+=increment; 
-        lookX+= gridSize;
+        newX += FPS; 
+        lookX += gridSize;
       }
       else if (random == 3)
       {
         newDirection = 'U';
-        newY-=increment; 
-        lookY-=increment;
+        newY -= FPS; 
+        lookY -= FPS;
       }
       else if (random == 4)
       {
         newDirection = 'D';
-        newY+=increment; 
-        lookY+=gridSize;
+        newY += FPS; 
+        lookY += gridSize;
       }
       if (newDirection != backwards)
       {
@@ -168,38 +132,58 @@ public class Ghost extends Mover
     return newDirection;
   }
 
+  public char detectPacMan(){
+	
+	  if(pac.getPlayerX() - this.x >= 0 && pac.getPlayerX() - this.x <= 3){
+		  return 'R';
+	  }
+	  else if(pac.getPlayerX() - this.x >= -3 && pac.getPlayerX() - this.x <= 0){
+		  return 'L';
+	  }
+	  else if(pac.getPlayerY() - this.y >= 0 && pac.getPlayerY() - this.y <= 3){
+		  return 'D';
+	  }
+	  else if(pac.getPlayerY() - this.y >= -3 && pac.getPlayerY() - this.y <= 0){
+		  return 'U';
+	  }
+	  return 'N';
+  }
   /* Random move function for ghost */
-  public void chasePacMan()
+  public void move()
   {
-    lastX = x;
-    lastY = y;
+    lastX=x;
+    lastY=y;
  
     /* If we can make a decision, pick a new direction randomly */
-    if(isChoiceDest())
+    if(isChoiceDest() && detectPacMan() != 'N') {
+    	
+    	direction = detectPacMan();
+    }
+    if (isChoiceDest())
     {
       direction = newDirection();
     }
+    
     
     /* If that direction is valid, move that way */
     switch(direction)
     {
       case 'L':
-         if ( isValidDest(x-increment,y))
-           x -= increment;
+         if ( isValidDest(x-FPS,y))
+           x -= FPS;
          break;     
       case 'R':
          if ( isValidDest(x+gridSize,y))
-           x+= increment;
+           x+= FPS;
          break;     
       case 'U':
-         if ( isValidDest(x,y-increment))
-           y-= increment;
+         if ( isValidDest(x,y-FPS))
+           y-= FPS;
          break;     
       case 'D':
          if ( isValidDest(x,y+gridSize))
-           y+= increment;
+           y+= FPS;
          break;     
     }
   }
 }
-
