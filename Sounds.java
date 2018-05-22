@@ -1,74 +1,39 @@
-import java.net.URL;
-import javax.sound.sampled.*;
+import sun.audio.*;
+import java.io.*;
 
-/* This class controls all sound effects*/
-public class Sounds{
-    
-    Clip nomNom;
-    Clip newGame;
-    Clip death;
-    /* Keeps track of whether or not the eating sound is playing*/
-    boolean stopped;
-       
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.JOptionPane;
 
-/* Initialize audio files */ 
-    public Sounds(){
-        stopped=true; 
-        URL url;
-        AudioInputStream audioIn;
-        
-        try{
-            // Pacman eating sound
-            url = this.getClass().getClassLoader().getResource("sounds/nomnom.wav");
-            audioIn = AudioSystem.getAudioInputStream(url);
-            nomNom = AudioSystem.getClip();
-            nomNom.open(audioIn);
-            
-            // newGame        
-            url = this.getClass().getClassLoader().getResource("sounds/newGame.wav");
-            audioIn = AudioSystem.getAudioInputStream(url);
-            newGame = AudioSystem.getClip();
-            newGame.open(audioIn);
-            
-            // death        
-            url = this.getClass().getClassLoader().getResource("sounds/death.wav");
-            audioIn = AudioSystem.getAudioInputStream(url);
-            death = AudioSystem.getClip();
-            death.open(audioIn);
+public class Sounds {
+  public static void main(String[] args) {
+	  
+	  playsound("nomnom.WAV");
+  }
+  public static void playsound(String sound){
+	
+	  
+	  
+	  try{
+		  AudioData data = new AudioStream(new FileInputStream(sound)).getData();
+		  ContinuousAudioDataStream audio = new ContinuousAudioDataStream(data);
+		  AudioPlayer.player.start(audio);
+		  
+	  }catch(Exception e){
+		  
+		  System.out.println("Error");
+	  }
+  }
+  public void stopSound(String sound){
 
-        }catch(Exception e){}
-    }
-    
-    /* Play pacman eating sound */
-    public void nomNom(){
-        /* If it's already playing, don't start it playing again!*/
-        if (!stopped)
-          return;
-
-        stopped=false;
-        nomNom.stop();
-        nomNom.setFramePosition(0);
-        nomNom.loop(Clip.LOOP_CONTINUOUSLY);
-    }
-
-    /* Stop pacman eating sound */
-    public void nomNomStop(){
-        stopped=true;
-        nomNom.stop();
-        nomNom.setFramePosition(0);
-    }
-    
-    /* Play new game sound */
-    public void newGame(){
-        newGame.stop();
-        newGame.setFramePosition(0);
-        newGame.start();
-    }
-    
-    /* Play pacman death sound */
-    public void death(){
-        death.stop();
-        death.setFramePosition(0);
-        death.start();
-    }
+	  try{
+		  AudioData data = new AudioStream(new FileInputStream(sound)).getData();
+		  ContinuousAudioDataStream audio = new ContinuousAudioDataStream(data);
+		  AudioPlayer.player.stop(audio);
+		  
+	  }catch(Exception e){
+		  
+		  System.out.println("Error");
+	  }
+  }
 }
