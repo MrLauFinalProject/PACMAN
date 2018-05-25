@@ -22,7 +22,7 @@ public class Board extends JPanel
   Image ghost21 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost21.jpg"); 
   Image ghost31 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost31.jpg"); 
   Image ghost41 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost41.jpg"); 
-  Image titleScreenImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\titleScreen.jpg"); 
+  Image titleScreenImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\titleScreen2.jpg"); 
   Image gameOverImage = Toolkit.getDefaultToolkit().getImage("A:/Desktop/pacman pics/gameOver.jpg"); 
   Image winScreenImage = Toolkit.getDefaultToolkit().getImage("A:/Desktop/pacman pics/winScreen.jpg");
 
@@ -35,6 +35,7 @@ public class Board extends JPanel
 
   long timer = System.currentTimeMillis();
 
+  Sounds audio;
  
   int dying=0;
  
@@ -378,7 +379,7 @@ public class Board extends JPanel
       g.drawImage(titleScreenImage,0,0,Color.BLACK,null);
 
       // Stop any pacman eating sounds 
-      //sounds.nomNomStop();
+      
       New = 1;
       return;
     } 
@@ -472,22 +473,24 @@ public class Board extends JPanel
 
 
     //collisions
-    if (player.x == ghost1.x && Math.abs(player.y-ghost1.y) < 10)
-      lifeLost=true;
-    else if (player.x == ghost2.x && Math.abs(player.y-ghost2.y) < 10)
-      lifeLost=true;
-    else if (player.x == ghost3.x && Math.abs(player.y-ghost3.y) < 10)
-      lifeLost=true;
-    else if (player.x == ghost4.x && Math.abs(player.y-ghost4.y) < 10)
-      lifeLost=true;
-    else if (player.y == ghost1.y && Math.abs(player.x-ghost1.x) < 10)
-      lifeLost=true;
-    else if (player.y == ghost2.y && Math.abs(player.x-ghost2.x) < 10)
-      lifeLost=true;
-    else if (player.y == ghost3.y && Math.abs(player.x-ghost3.x) < 10)
-      lifeLost=true;
-    else if (player.y == ghost4.y && Math.abs(player.x-ghost4.x) < 10)
-      lifeLost=true;
+    if (player.x == ghost1.x && Math.abs(player.y-ghost1.y) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
+      
+    else if (player.x == ghost2.x && Math.abs(player.y-ghost2.y) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
+      
+    else if (player.x == ghost3.x && Math.abs(player.y-ghost3.y) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
+    else if (player.x == ghost4.x && Math.abs(player.y-ghost4.y) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
+    else if (player.y == ghost1.y && Math.abs(player.x-ghost1.x) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
+    else if (player.y == ghost2.y && Math.abs(player.x-ghost2.x) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
+    else if (player.y == ghost3.y && Math.abs(player.x-ghost3.x) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
+    else if (player.y == ghost4.y && Math.abs(player.x-ghost4.x) < 10){audio.playOnce("death.WAV");
+    lifeLost=true;}
 
     
     if (lifeLost && !stopped)
