@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
+import java.io.File;
+
 import javax.swing.JApplet;
 import java.awt.*;
 import java.util.*;
@@ -10,12 +12,13 @@ import java.lang.*;
 public class Pacman extends JApplet implements MouseListener, KeyListener
 { 
 
+	static Sounds audio;
   // this is for timing the gameover and win screens
   long mainScreenTimer = -1;
   long timer = -1;
 
 
-  Board board = new Board(); 
+  static Board board = new Board(); 
 
   //framerate
   javax.swing.Timer frameTimer;
@@ -26,13 +29,13 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
 	  board.requestFocus();
 
     JFrame frame = new JFrame(); 
-    frame.setSize(420,460);
+    frame.setSize(420,500);
 
     frame.add(board,BorderLayout.CENTER);
 
     board.addMouseListener(this);  
     board.addKeyListener(this);  
-
+    
     frame.setVisible(true);
     frame.setResizable(false);
 
@@ -129,15 +132,15 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       }
 
       /* Also move the ghosts, and update the food states */
-      board.ghost1.chasePacMan(); 
-      board.ghost2.chasePacMan(); 
-      board.ghost3.chasePacMan(); 
-      board.ghost4.chasePacMan(); 
-      board.player.updatePellet();
-      board.ghost1.updatePellet();
-      board.ghost2.updatePellet();
-      board.ghost3.updatePellet();
-      board.ghost4.updatePellet();
+      board.ghost1.move(); 
+      board.ghost2.move(); 
+      board.ghost3.move(); 
+      board.ghost4.move(); 
+      board.player.updatefood();
+      board.ghost1.updatefood();
+      board.ghost2.updatefood();
+      board.ghost3.updatefood();
+      board.ghost4.updatefood();
     }
 
     // We reset the board here 
@@ -176,12 +179,8 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
 
   // key listener class
   public void keyPressed(KeyEvent e){
-    if (board.titleScreen) {//any key is pressed
-      board.titleScreen = false;//end title screen and go into game
-      return;
-    }
     
-    else if (board.winScreen || board.overScreen)//if your in win or game over
+	  if (board.winScreen || board.overScreen)//if your in win or game over
     {
       board.titleScreen = true;//go to title screen
       board.winScreen = false;
@@ -246,5 +245,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
   public static void main(String [] args)
   {
       Pacman temp = new Pacman();
+      
+      audio.playOnce("newGame.WAV");
   }
 }
