@@ -9,22 +9,23 @@ import java.io.*;
 public class Board extends JPanel
 {
  //get the images
-  Image pacmanImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\pacman.jpg"); //put image file location here
-  Image pacmanUpImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\pacmanup.jpg"); 
-  Image pacmanDownImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\pacmandown.jpg"); 
-  Image pacmanLeftImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\pacmanleft.jpg"); 
-  Image pacmanRightImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\pacmanright.jpg"); 
-  Image ghost10 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost10.jpg"); 
-  Image ghost20 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost20.jpg"); 
-  Image ghost30 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost30.jpg"); 
-  Image ghost40 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost40.jpg"); 
-  Image ghost11 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost11.jpg"); 
-  Image ghost21 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost21.jpg"); 
-  Image ghost31 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost31.jpg"); 
-  Image ghost41 = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\ghost41.jpg"); 
-  Image titleScreenImage = Toolkit.getDefaultToolkit().getImage("C:\\Users\\Ajay\\Documents\\PacMan\\Images\\titleScreen2.jpg"); 
-  Image gameOverImage = Toolkit.getDefaultToolkit().getImage("A:/Desktop/pacman pics/gameOver.jpg"); 
-  Image winScreenImage = Toolkit.getDefaultToolkit().getImage("A:/Desktop/pacman pics/winScreen.jpg");
+	String filePath = "C:\\Users\\alexs\\Desktop\\PacManFiles\\";
+  Image pacmanImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacman.jpg"); //put image file location here
+  Image pacmanUpImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmanup.jpg"); 
+  Image pacmanDownImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmandown.jpg"); 
+  Image pacmanLeftImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmanleft.jpg"); 
+  Image pacmanRightImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmanright.jpg"); 
+  Image ghost10 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost10.jpg"); 
+  Image ghost20 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost20.jpg"); 
+  Image ghost30 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost30.jpg"); 
+  Image ghost40 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost40.jpg"); 
+  Image ghost11 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost11.jpg"); 
+  Image ghost21 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost21.jpg"); 
+  Image ghost31 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost31.jpg"); 
+  Image ghost41 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost41.jpg"); 
+  Image titleScreenImage = Toolkit.getDefaultToolkit().getImage(filePath + "titleScreen2.jpg"); 
+  Image gameOverImage = Toolkit.getDefaultToolkit().getImage(filePath + "gameOver.jpg"); 
+  Image winScreenImage = Toolkit.getDefaultToolkit().getImage(filePath + "winScreen.jpg");
 
   // Initialize the player and ghosts 
   Player player = new Player(200,300);
@@ -42,22 +43,25 @@ public class Board extends JPanel
   int currScore;
   int highScore;
 
-  /* if the high scores have been cleared, we have to update the top of the screen to reflect that */
   boolean clearHighScores= false;
 
   int numLives=2;
 
-  /*Contains the game map, passed to player and ghosts */
   int[][] map;
 
-  /* Contains the map of all foods*/
   boolean[][] foods;
 
-  /* Game dimensions */
+  // Game dimensions 
   int gridSize;
   int max;
+  
+  //powerUps Status
+  static Boolean UL = true;
+  static Boolean UR = true;
+  static Boolean BL = true;
+  static Boolean BR = true;
 
-  /* map flags*/
+  // game info
   boolean stopped;
   boolean titleScreen;
   boolean winScreen = false;
@@ -65,20 +69,14 @@ public class Board extends JPanel
   boolean demo = false;
   int New;
 
-  /* Used to call sound effects */
-  //GameSounds sounds;
-
   int lastfoodEatenX = 0;
   int lastfoodEatenY=0;
 
-  /* This is the font used for the menus */
   Font font = new Font("Monospaced",Font.BOLD, 12);
 
-  /* Constructor initializes map flags etc.*/
   public Board() 
   {
     initHighScores();
-    //sounds = new GameSounds();
     currScore=0;
     stopped=false;
     max=400;
@@ -90,7 +88,7 @@ public class Board extends JPanel
   // Reads the high scores file and saves it 
   public void initHighScores()
   {
-    File file = new File("A:/Desktop/pacman pics/highScores.txt");
+    File file = new File(filePath + "highScores.txt");
     Scanner sc;
     try
     {
@@ -100,16 +98,15 @@ public class Board extends JPanel
     }
     catch(Exception e)
     {
-    	System.out.println("error");
+    	System.out.println("Error 1 board");
     }
   }
 
-  /* Writes the new high score to a file and sets flag to update it on screen */
   public void updateScore(int score)
   {
     PrintWriter out;
     try{
-      out = new PrintWriter("highScores.txt");
+      out = new PrintWriter(filePath + "highScores.txt");
       out.println(score);
       out.close();
     }
@@ -119,12 +116,11 @@ public class Board extends JPanel
     clearHighScores=true;
   }
 
-  /* Wipes the high scores file and sets flag to update it on screen */
   public void clearHighScores()
   {
     PrintWriter out;
     try{
-      out = new PrintWriter("highScores.txt");
+      out = new PrintWriter(filePath + "highScores.txt");
       out.println("0");
       out.close();
     }
@@ -141,7 +137,7 @@ public class Board extends JPanel
     map = new int[20][20];
     foods = new boolean[20][20];
 
-    /* Clear map and foods arrays */
+    // Clear map and food
     for(int i=0;i<20;i++){
       for(int j=0;j<20;j++){
         map[i][j]=1;
@@ -149,7 +145,7 @@ public class Board extends JPanel
       }
     }
 
-    // Handle the weird spots with no foods
+    // Handle the weird spots with no food
     for(int i = 5;i<14;i++){
       for(int j = 5;j<12;j++){
         foods[i][j]=false;
@@ -162,8 +158,6 @@ public class Board extends JPanel
 
   }
 
-
-
   public void updateMap(int x,int y, int width, int height)
   {
     for (int i =x/gridSize; i<x/gridSize+width/gridSize;i++)
@@ -175,8 +169,6 @@ public class Board extends JPanel
       }
     }
   } 
-
-
 
   public void drawLives(Graphics g)
   {
@@ -195,8 +187,6 @@ public class Board extends JPanel
     g.drawString("Exit",350,max+5+gridSize);
   }
   
-  
-
   public void drawBoard(Graphics g)//we couldnt find any easier way to draw the map other than manually so here is how the map is placed
   {
         g.setColor(Color.BLACK);
@@ -304,7 +294,6 @@ public class Board extends JPanel
         drawLives(g);
   } 
 
-
   // Draws the foods on the screen 
   public void drawfoods(Graphics g)
   {
@@ -315,26 +304,52 @@ public class Board extends JPanel
             g.fillOval(i*20+8,j*20+8,4,4);
           }
         }
-  }
 
+
+  }
+ 
   // redraws food that the ghosts run over because they are also movers
   public void fillfood(int x, int y, Graphics g)
   {
     g.setColor(Color.YELLOW);
     g.fillOval(x*20+28,y*20+28,4,4);
   }
+public void drawPowerups(Graphics g) {
+	  
+	  g.setColor(Color.BLUE);
+	  if(UL) 
+		  g.fillOval(23,23,14,14);
+	  if(UR)
+		  g.fillOval(378, 23, 14, 14);
+	  if(BR)
+		  g.fillOval(379, 379, 14, 14);
+	  if(BL)
+		  g.fillOval(23, 378, 14, 14);
+  }
 
   // This is the main function that draws one entire frame of the game 
   public void paint(Graphics g)
   {
+	  if(player.getPlayerX() == 23 && player.getPlayerY() == 23) 
+		   UL = false;
+	  if(player.getPlayerX() == 378 && player.getPlayerY() == 23)
+		  UR = false;
+	  if(player.getPlayerX() == 379 & player.getPlayerY() == 379)
+		  BR = false;
+	  if(player.getPlayerX() == 23 && player.getPlayerY() ==  378)
+		  BL = false; 
+	  
  
-    if (dying > 0){
-      // Stop any pacman eating sounds 
-      //sounds.nomNomStop();
+//draw the Powerups
+ drawPowerups(g);
 
+		
+    if (dying > 0){
+    	
       // Draw the pacman 
       g.drawImage(pacmanImage,player.x,player.y,Color.BLACK,null);
       g.setColor(Color.BLACK);
+      
       
       // Kill the pacman 
       if (dying == 4)
@@ -449,12 +464,10 @@ public class Board extends JPanel
     }
     else if (New == 3){
       New++;
-     // sounds.newGame();
       timer = System.currentTimeMillis();
       return;
     }
     else if (New == 4){
-      /* Stay in this map until the sound effect is over */
       long currTime = System.currentTimeMillis();
       if (currTime - timer >= 5000)
       {
@@ -496,11 +509,7 @@ public class Board extends JPanel
     if (lifeLost && !stopped)
     {
       dying = 4;
-      
-     // sounds.death();
-     // sounds.nomNomStop();
 
-      /*Decrement lives, update screen to reflect that.  And set appropriate flags and timers */
       numLives--;
       stopped=true;
       drawLives(g);
@@ -518,8 +527,6 @@ public class Board extends JPanel
     {
       lastfoodEatenX = player.foodX;
       lastfoodEatenY = player.foodY;
-
-      //sounds.nomNom();
       
       player.foodsEaten++;
 
@@ -554,10 +561,6 @@ public class Board extends JPanel
       }
     }
 
-    else if ( (player.foodX != lastfoodEatenX || player.foodY != lastfoodEatenY ) || player.stopped)
-    {
-      //sounds.nomNomStop();
-    }
 
 
     if ( foods[ghost1.lastfoodX][ghost1.lastfoodY])
