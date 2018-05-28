@@ -1,7 +1,18 @@
+
+/*
+ * we worte this entire class ourselves
+ */
 import java.util.HashSet;
 import java.util.Set;
+import java.awt.*;
+import javax.imageio.*;
+import javax.swing.JPanel;
+import java.lang.Math;
+import java.util.*;
+import java.io.*;
 
-class Ghost extends Mover//currently ramdom
+
+class Ghost extends Mover
 { 
 
 
@@ -16,6 +27,11 @@ class Ghost extends Mover//currently ramdom
   int y;
 
   int foodX,foodY;
+  int p1X, p1Y;//upper left powerup
+  int p2X, p2Y;//upper right powerup
+  int p3X, p3Y;//bottom left powerup
+  int p4X, p4Y; //bottom right powerup	
+ 
 
   int lastfoodX,lastfoodY;
 
@@ -30,10 +46,22 @@ class Ghost extends Mover//currently ramdom
     this.lastY = y;
     this.x = x;
     this.y = y;
+    p1X = 0;
+    p1Y = 0;
+    
+    p2X = gridSize-1;
+    p2Y = 0;
+    
+    p3X = gridSize-1;
+    p3Y = gridSize-1;
+    
+    p4X = 0;
+    p4Y = gridSize-1;
   }
 
   public void updatefood()//makes it so that the ghosts can not eat foods. if removed the ghosts also eat the foods
   {
+	  System.out.println(foodX + " " + foodY);
     int tempX,tempY;
     tempX = x/gridSize-1;
     tempY = y/gridSize-1;
@@ -45,9 +73,9 @@ class Ghost extends Mover//currently ramdom
       foodY = tempY;
     }
      
-  } 
+  }
  
-  /* Determines if the location is one where the ghost has to make a decision*/ 
+  // Determines if the location is one where the ghost has to make a decision like at a intersection
   public boolean isChoiceDest()
   {
     if (  x%gridSize==0&& y%gridSize==0 )
@@ -57,7 +85,7 @@ class Ghost extends Mover//currently ramdom
     return false;
   }
 
-  /* Chooses a new direction randomly for the ghost to move */
+  // Chooses a new direction
   public char newDirection()
   { 
     int random;
@@ -83,11 +111,11 @@ class Ghost extends Mover//currently ramdom
     }
 
     char newDirection = backwards;
-    /* While we still haven't found a valid direction */
+    // While we still haven't found a direction
     while (newDirection == backwards || !isValidDest(lookX,lookY))
     {
-      /* If we've tried every location, turn around and break the loop */
-      if (set.size()==3)
+    	//if now valid direction found then we go back do where we came from
+    	if (set.size()==3)
       {
         newDirection=backwards;
         break;
@@ -98,7 +126,6 @@ class Ghost extends Mover//currently ramdom
       lookX=x;
       lookY=y;
       
-      /* Randomly choose a direction */
       random = (int)(Math.random()*4) + 1;
       if (random == 1)
       {
@@ -132,40 +159,17 @@ class Ghost extends Mover//currently ramdom
     return newDirection;
   }
 
-  public char detectPacMan(){
-	
-	  if(pac.getPlayerX() - this.x >= 0 && pac.getPlayerX() - this.x <= 3){
-		  return 'R';
-	  }
-	  else if(pac.getPlayerX() - this.x >= -3 && pac.getPlayerX() - this.x <= 0){
-		  return 'L';
-	  }
-	  else if(pac.getPlayerY() - this.y >= 0 && pac.getPlayerY() - this.y <= 3){
-		  return 'D';
-	  }
-	  else if(pac.getPlayerY() - this.y >= -3 && pac.getPlayerY() - this.y <= 0){
-		  return 'U';
-	  }
-	  return 'N';
-  }
-  /* Random move function for ghost */
   public void move()
   {
     lastX=x;
     lastY=y;
  
-    /* If we can make a decision, pick a new direction randomly */
-    if(isChoiceDest() && detectPacMan() != 'N') {
-    	
-    	direction = detectPacMan();
-    }
     if (isChoiceDest())
     {
       direction = newDirection();
     }
     
     
-    /* If that direction is valid, move that way */
     switch(direction)
     {
       case 'L':
@@ -187,3 +191,5 @@ class Ghost extends Mover//currently ramdom
     }
   }
 }
+
+
