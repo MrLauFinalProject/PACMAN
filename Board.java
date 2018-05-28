@@ -9,7 +9,7 @@ import java.io.*;
 public class Board extends JPanel
 {
  //get the images
-	String filePath = "C:\\Users\\alexs\\Desktop\\PacManFiles\\";
+	String filePath = "C:\\Users\\Ajay\\Documents\\PacMan\\Images\\";
   Image pacmanImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacman.jpg"); //put image file location here
   Image pacmanUpImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmanup.jpg"); 
   Image pacmanDownImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmandown.jpg"); 
@@ -22,7 +22,7 @@ public class Board extends JPanel
   Image ghost11 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost11.jpg"); 
   Image ghost21 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost21.jpg"); 
   Image ghost31 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost31.jpg"); 
-  Image ghost41 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost41.jpg"); 
+  Image ghost41 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost41.jpg");  
   Image titleScreenImage = Toolkit.getDefaultToolkit().getImage(filePath + "titleScreen2.jpg"); 
   Image gameOverImage = Toolkit.getDefaultToolkit().getImage(filePath + "gameOver.jpg"); 
   Image winScreenImage = Toolkit.getDefaultToolkit().getImage(filePath + "winScreen.jpg");
@@ -38,6 +38,86 @@ public class Board extends JPanel
 
   Sounds audio;
  
+  int powerupSeconds = 0;
+  Timer pTimer = new Timer();
+  TimerTask task = new TimerTask(){
+		
+		public void run(){
+			changetoScared();
+			pActive = true;
+			powerupSeconds++;
+			System.out.println("Seconds passed: " + powerupSeconds);
+			
+			if(powerupSeconds == 8){
+				
+				changetoNormal();
+				pActive = false;
+				cancel();
+				pTimer.cancel();
+			}
+			
+		}
+	};
+  
+	int powerupSeconds2 = 0;
+	Timer pTimer2 = new Timer();
+	TimerTask task2 = new TimerTask(){
+			
+		public void run(){
+				changetoScared();
+				pActive = true;
+				powerupSeconds2++;
+				System.out.println("Seconds passed: " + powerupSeconds2);
+				
+				if(powerupSeconds2 == 8){
+					changetoNormal();
+					pActive = false;
+					cancel();
+					pTimer2.cancel();
+				}
+				
+			}
+		};
+		
+		int powerupSeconds3 = 0;
+		  Timer pTimer3 = new Timer();
+		  TimerTask task3 = new TimerTask(){
+				
+				public void run(){
+					changetoScared();
+					pActive = true;
+					powerupSeconds3++;
+					System.out.println("Seconds passed: " + powerupSeconds3);
+					
+					if(powerupSeconds3 == 8){
+						changetoNormal();
+						pActive = false;
+						cancel();
+						pTimer3.cancel();
+					}
+					
+				}
+			};	
+
+			int powerupSeconds4 = 0;
+			  Timer pTimer4 = new Timer();
+			  TimerTask task4 = new TimerTask(){
+					
+					public void run(){
+						changetoScared();
+						pActive = true;
+						powerupSeconds4++;
+						System.out.println("Seconds passed: " + powerupSeconds4);
+						
+						if(powerupSeconds4 == 8){
+							changetoNormal();
+							pActive = false;
+							cancel();
+							pTimer4.cancel();
+						}
+						
+					}
+				};
   int dying=0;
  
   int currScore;
@@ -327,34 +407,69 @@ public void drawPowerups(Graphics g) {
 	  if(BL)
 		  g.fillOval(23, 378, 14, 14);
   }
-
+public void changetoScared(){
+	
+	ghost10 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
+    ghost20 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
+    ghost30 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
+    ghost40 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
+    ghost11 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
+    ghost21 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
+    ghost31 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
+    ghost41 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg");
+}
+public void changetoNormal(){
+	ghost10 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost10.jpg"); 
+	   ghost20 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost20.jpg"); 
+	   ghost30 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost30.jpg"); 
+	   ghost40 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost40.jpg"); 
+	   ghost11 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost11.jpg"); 
+	   ghost21 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost21.jpg"); 
+	   ghost31 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost31.jpg"); 
+	  ghost41 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost41.jpg"); 
+}
+public void start(TimerTask task){
+	
+	if(pActive == true){
+		
+		pTimer.scheduleAtFixedRate(task, 0, 1000);
+	}
+	
+}
   // This is the main function that draws one entire frame of the game 
   public void paint(Graphics g)
-  {
-	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10) && (UL != false)) {
+  {  
+	  
+	  if((Math.abs(player.getPlayerX() - 23) <= 20) && (Math.abs(player.getPlayerY() - 23) <= 20) && (UL != false)) {
+		  
 		   UL = false;
 		   currScore += 200;
 		   pActive = true;
+		   start(task);
 	  }
-	  if((Math.abs(player.getPlayerX() - 378) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10) && (UL != false)) {
+	  if((Math.abs(player.getPlayerX() - 378) <= 30) && (Math.abs(player.getPlayerY() - 23) <= 30) && (UR != false)) {
 		  UR = false;
 		  currScore += 200;
 		   pActive = true;
+		   start(task2);
 	  }
-	  if((Math.abs(player.getPlayerX() - 379) <= 10) && (Math.abs(player.getPlayerY() - 379) <= 10) && (UL != false)) {
+	  if((Math.abs(player.getPlayerX() - 379) <= 20) && (Math.abs(player.getPlayerY() - 379) <= 20) && (BR != false)) {
 		  BR = false;
 		  currScore += 200;
 		   pActive = true;
+		   start(task3);
 	  }
-	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 378) <= 10) && (UL != false)) {
+	  if((Math.abs(player.getPlayerX() - 23) <= 20) && (Math.abs(player.getPlayerY() - 378) <= 20) && (BL != false)) {
 		  BL = false; 
 		  currScore += 200;
 		   pActive = true;
+		   start(task4);
 	  }
  
 //draw the Power-ups
  drawPowerups(g);
 
+ 
 		
     if (dying > 0){
     	
@@ -500,6 +615,7 @@ public void drawPowerups(Graphics g) {
     //collisions
     if (player.x == ghost1.x && Math.abs(player.y-ghost1.y) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost1.x = 180;
     		ghost1.y = 180;
     	}
@@ -511,6 +627,7 @@ public void drawPowerups(Graphics g) {
       
     else if (player.x == ghost2.x && Math.abs(player.y-ghost2.y) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost2.x = 200;
     		ghost2.y = 180;
     	}
@@ -522,6 +639,7 @@ public void drawPowerups(Graphics g) {
       
     else if (player.x == ghost3.x && Math.abs(player.y-ghost3.y) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost3.x = 220;
     		ghost3.y = 180;
     	}
@@ -533,6 +651,7 @@ public void drawPowerups(Graphics g) {
     
     else if (player.x == ghost4.x && Math.abs(player.y-ghost4.y) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost4.x = 220;
     		ghost4.y = 180;
     	}
@@ -544,6 +663,7 @@ public void drawPowerups(Graphics g) {
     
     else if (player.y == ghost1.y && Math.abs(player.x-ghost1.x) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost1.x = 180;
     		ghost1.y = 180;
     	}
@@ -555,6 +675,7 @@ public void drawPowerups(Graphics g) {
     
     else if (player.y == ghost2.y && Math.abs(player.x-ghost2.x) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost2.x = 200;
     		ghost2.y = 180;
     	}
@@ -566,6 +687,7 @@ public void drawPowerups(Graphics g) {
     
     else if (player.y == ghost3.y && Math.abs(player.x-ghost3.x) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost3.x = 220;
     		ghost3.y = 180;
     	}
@@ -577,6 +699,7 @@ public void drawPowerups(Graphics g) {
     
     else if (player.y == ghost4.y && Math.abs(player.x-ghost4.x) < 10){
     	if(pActive) {
+    		currScore += 100;
     		ghost4.x = 220;
     		ghost4.y = 180;
     	}
