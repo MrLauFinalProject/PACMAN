@@ -330,13 +330,13 @@ public void drawPowerups(Graphics g) {
   // This is the main function that draws one entire frame of the game 
   public void paint(Graphics g)
   {
-	  if(player.getPlayerX() == 23 && player.getPlayerY() == 23) 
+	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10)) 
 		   UL = false;
-	  if(player.getPlayerX() == 378 && player.getPlayerY() == 23)
+	  if((Math.abs(player.getPlayerX() - 378) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10))
 		  UR = false;
-	  if(player.getPlayerX() == 379 & player.getPlayerY() == 379)
+	  if((Math.abs(player.getPlayerX() - 379) <= 10) && (Math.abs(player.getPlayerY() - 379) <= 10))
 		  BR = false;
-	  if(player.getPlayerX() == 23 && player.getPlayerY() ==  378)
+	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 378) <= 10))
 		  BL = false; 
 	  
  
