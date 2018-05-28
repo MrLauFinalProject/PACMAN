@@ -1,6 +1,4 @@
-
-
-class Mover
+class Mover// alex wrote the entire player class on his own
 {
   //counts the frames in the animation
   int frameCount=0;
