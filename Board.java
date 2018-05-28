@@ -9,8 +9,8 @@ import java.io.*;
 public class Board extends JPanel
 {
  //get the images
-	String filePath = "C:\\Users\\Ajay\\Documents\\PacMan\\Images\\";
-  Image pacmanImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacman.jpg"); //put image file location here
+	String filePath = "C:\\Users\\alexs\\Desktop\\PacManFiles\\";//put image file location here
+  Image pacmanImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacman.jpg"); //we learned about the get image toolkit on our own
   Image pacmanUpImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmanup.jpg"); 
   Image pacmanDownImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmandown.jpg"); 
   Image pacmanLeftImage = Toolkit.getDefaultToolkit().getImage(filePath + "pacmanleft.jpg"); 
@@ -39,7 +39,7 @@ public class Board extends JPanel
   Sounds audio;
  
   int powerupSeconds = 0;
-  Timer pTimer = new Timer();
+  Timer pTimer = new Timer();//Ajay figured out the timer Object himself with a youtube video
   TimerTask task = new TimerTask(){
 		
 		public void run(){
@@ -167,7 +167,7 @@ public class Board extends JPanel
   }
 
   // Reads the high scores file and saves it 
-  public void initHighScores()
+  public void initHighScores()//we created the high scores methods baised on previous labs
   {
     File file = new File(filePath + "highScores.txt");
     Scanner sc;
@@ -239,7 +239,7 @@ public class Board extends JPanel
 
   }
 
-  public void updateMap(int x,int y, int width, int height)
+  public void updateMap(int x,int y, int width, int height)//we created this method ourselves
   {
     for (int i =x/gridSize; i<x/gridSize+width/gridSize;i++)
     {
@@ -251,7 +251,7 @@ public class Board extends JPanel
     }
   } 
 
-  public void drawLives(Graphics g)
+  public void drawLives(Graphics g)//we adapted the usage of the Graphics class from online
   {
     g.setColor(Color.BLACK);
 
@@ -407,7 +407,7 @@ public void drawPowerups(Graphics g) {
 	  if(BL)
 		  g.fillOval(23, 378, 14, 14);
   }
-public void changetoScared(){
+public void changetoScared(){//we did this on our own
 	
 	ghost10 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
     ghost20 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
@@ -418,7 +418,7 @@ public void changetoScared(){
     ghost31 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg"); 
     ghost41 = Toolkit.getDefaultToolkit().getImage(filePath + "scaredGhost.jpg");
 }
-public void changetoNormal(){
+public void changetoNormal(){// we did this on our own
 	ghost10 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost10.jpg"); 
 	   ghost20 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost20.jpg"); 
 	   ghost30 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost30.jpg"); 
@@ -428,7 +428,7 @@ public void changetoNormal(){
 	   ghost31 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost31.jpg"); 
 	  ghost41 = Toolkit.getDefaultToolkit().getImage(filePath + "ghost41.jpg"); 
 }
-public void start(TimerTask task){
+public void start(TimerTask task){//ajay learned about timing
 	
 	if(pActive == true){
 		
@@ -437,7 +437,7 @@ public void start(TimerTask task){
 	
 }
   // This is the main function that draws one entire frame of the game 
-  public void paint(Graphics g)
+  public void paint(Graphics g)// Alex did the first half of the paint class till line 712 and adapted the rest from online
   {  
 	  
 	  if((Math.abs(player.getPlayerX() - 23) <= 20) && (Math.abs(player.getPlayerY() - 23) <= 20) && (UL != false)) {
@@ -446,24 +446,26 @@ public void start(TimerTask task){
 		   currScore += 200;
 		   pActive = true;
 		   start(task);
+		   audio.playOnce(filePath + "powerUp.wav");
 	  }
 	  if((Math.abs(player.getPlayerX() - 378) <= 30) && (Math.abs(player.getPlayerY() - 23) <= 30) && (UR != false)) {
 		  UR = false;
 		  currScore += 200;
 		   pActive = true;
 		   start(task2);
+		   audio.playOnce(filePath + "powerUp.wav");
 	  }
 	  if((Math.abs(player.getPlayerX() - 379) <= 20) && (Math.abs(player.getPlayerY() - 379) <= 20) && (BR != false)) {
 		  BR = false;
 		  currScore += 200;
 		   pActive = true;
-		   start(task3);
+		   audio.playOnce(filePath + "powerUp.wav");
 	  }
 	  if((Math.abs(player.getPlayerX() - 23) <= 20) && (Math.abs(player.getPlayerY() - 378) <= 20) && (BL != false)) {
 		  BL = false; 
 		  currScore += 200;
 		   pActive = true;
-		   start(task4);
+		   audio.playOnce(filePath + "powerUp.wav");
 	  }
  
 //draw the Power-ups
