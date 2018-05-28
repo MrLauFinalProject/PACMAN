@@ -62,6 +62,7 @@ public class Board extends JPanel
   static Boolean BR = true;
 
   // game info
+  boolean pActive = false;
   boolean stopped;
   boolean titleScreen;
   boolean winScreen = false;
@@ -316,7 +317,7 @@ public class Board extends JPanel
   }
 public void drawPowerups(Graphics g) {
 	  
-	  g.setColor(Color.BLUE);
+	  g.setColor(Color.YELLOW);
 	  if(UL) 
 		  g.fillOval(23,23,14,14);
 	  if(UR)
@@ -330,17 +331,28 @@ public void drawPowerups(Graphics g) {
   // This is the main function that draws one entire frame of the game 
   public void paint(Graphics g)
   {
-	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10)) 
+	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10) && (UL != false)) {
 		   UL = false;
-	  if((Math.abs(player.getPlayerX() - 378) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10))
+		   currScore += 200;
+		   pActive = true;
+	  }
+	  if((Math.abs(player.getPlayerX() - 378) <= 10) && (Math.abs(player.getPlayerY() - 23) <= 10) && (UL != false)) {
 		  UR = false;
-	  if((Math.abs(player.getPlayerX() - 379) <= 10) && (Math.abs(player.getPlayerY() - 379) <= 10))
+		  currScore += 200;
+		   pActive = true;
+	  }
+	  if((Math.abs(player.getPlayerX() - 379) <= 10) && (Math.abs(player.getPlayerY() - 379) <= 10) && (UL != false)) {
 		  BR = false;
-	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 378) <= 10))
+		  currScore += 200;
+		   pActive = true;
+	  }
+	  if((Math.abs(player.getPlayerX() - 23) <= 10) && (Math.abs(player.getPlayerY() - 378) <= 10) && (UL != false)) {
 		  BL = false; 
-	  
+		  currScore += 200;
+		   pActive = true;
+	  }
  
-//draw the Powerups
+//draw the Power-ups
  drawPowerups(g);
 
 		
@@ -486,24 +498,93 @@ public void drawPowerups(Graphics g) {
 
 
     //collisions
-    if (player.x == ghost1.x && Math.abs(player.y-ghost1.y) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
+    if (player.x == ghost1.x && Math.abs(player.y-ghost1.y) < 10){
+    	if(pActive) {
+    		ghost1.x = 180;
+    		ghost1.y = 180;
+    	}
+    	else {
+    		audio.playOnce("death.WAV");
+    		lifeLost=true;
+    	}
+    }
       
-    else if (player.x == ghost2.x && Math.abs(player.y-ghost2.y) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
+    else if (player.x == ghost2.x && Math.abs(player.y-ghost2.y) < 10){
+    	if(pActive) {
+    		ghost2.x = 200;
+    		ghost2.y = 180;
+    	}
+    	else {
+        	audio.playOnce("death.WAV");
+        	lifeLost=true;
+        	}
+    }
       
-    else if (player.x == ghost3.x && Math.abs(player.y-ghost3.y) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
-    else if (player.x == ghost4.x && Math.abs(player.y-ghost4.y) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
-    else if (player.y == ghost1.y && Math.abs(player.x-ghost1.x) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
-    else if (player.y == ghost2.y && Math.abs(player.x-ghost2.x) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
-    else if (player.y == ghost3.y && Math.abs(player.x-ghost3.x) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
-    else if (player.y == ghost4.y && Math.abs(player.x-ghost4.x) < 10){audio.playOnce("death.WAV");
-    lifeLost=true;}
+    else if (player.x == ghost3.x && Math.abs(player.y-ghost3.y) < 10){
+    	if(pActive) {
+    		ghost3.x = 220;
+    		ghost3.y = 180;
+    	}
+    	else {
+        	audio.playOnce("death.WAV");
+        	lifeLost=true;
+        }
+    }
+    
+    else if (player.x == ghost4.x && Math.abs(player.y-ghost4.y) < 10){
+    	if(pActive) {
+    		ghost4.x = 220;
+    		ghost4.y = 180;
+    	}
+    	else {
+        	audio.playOnce("death.WAV");
+        	lifeLost=true;
+        }
+    }
+    
+    else if (player.y == ghost1.y && Math.abs(player.x-ghost1.x) < 10){
+    	if(pActive) {
+    		ghost1.x = 180;
+    		ghost1.y = 180;
+    	}
+    	else {
+        	audio.playOnce("death.WAV");
+        	lifeLost=true;
+        }
+    }
+    
+    else if (player.y == ghost2.y && Math.abs(player.x-ghost2.x) < 10){
+    	if(pActive) {
+    		ghost2.x = 200;
+    		ghost2.y = 180;
+    	}
+    	else {
+        	audio.playOnce("death.WAV");
+        	lifeLost=true;
+        }
+    }
+    
+    else if (player.y == ghost3.y && Math.abs(player.x-ghost3.x) < 10){
+    	if(pActive) {
+    		ghost3.x = 220;
+    		ghost3.y = 180;
+    	}
+    	else {
+        	audio.playOnce("death.WAV");
+        	lifeLost=true;
+        }
+    }
+    
+    else if (player.y == ghost4.y && Math.abs(player.x-ghost4.x) < 10){
+    	if(pActive) {
+    		ghost4.x = 220;
+    		ghost4.y = 180;
+    	}
+    	else {
+        	audio.playOnce("death.WAV");
+        	lifeLost=true;
+        }
+    }
 
     
     if (lifeLost && !stopped)
