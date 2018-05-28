@@ -1,3 +1,7 @@
+/*
+ * we adapted the driver class from online to fit our code
+ */
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
@@ -9,7 +13,7 @@ import java.util.*;
 import java.lang.*;
 
 // This class has the gui creation and the keyboard and mouse listeners 
-public class Pacman extends JApplet implements MouseListener, KeyListener
+public class PacManDriver extends JApplet implements MouseListener, KeyListener
 { 
 
 	static Sounds audio;
@@ -24,7 +28,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
   javax.swing.Timer frameTimer;
  
    
-  public Pacman()
+  public PacManDriver()
   {
 	  board.requestFocus();
 
@@ -137,6 +141,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       board.ghost3.move(); 
       board.ghost4.move(); 
       board.player.updatefood();
+      board.player.updatePowerups();
       board.ghost1.updatefood();
       board.ghost2.updatefood();
       board.ghost3.updatefood();
@@ -244,7 +249,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
   
   public static void main(String [] args)
   {
-      Pacman temp = new Pacman();
+      PacManDriver temp = new PacManDriver();
       
       audio.playOnce("newGame.WAV");
   }
