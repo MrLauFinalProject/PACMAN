@@ -1,3 +1,8 @@
+/*
+ * we did the entire player class on our own
+ */
+
+import java.awt.Graphics;
 import java.util.*;
 class Player extends Mover
 {
@@ -21,6 +26,7 @@ class Player extends Mover
   //used to tell which food pacman is on top of
   int foodX;
   int foodY;
+  Graphics g;
 
   //for teleport tunnels
   boolean teleport;
@@ -44,7 +50,6 @@ class Player extends Mover
     desiredDirection='L';
     lastTime = System.currentTimeMillis();
   }
-
 
   //demo use only class
   public char newDirection()
@@ -263,7 +268,18 @@ class Player extends Mover
     foodX = x/gridSize-1;
     foodY = y/gridSize-1;
     }
-  } 
+  }
+  public void updatePowerups() {
+	  if(x == 23 && y == 23) 
+		   Board.UL = false;
+	  if(x == 378 && y == 23)
+		  Board.UR = false;
+	  if(x == 379 & y == 379)
+		  Board.BR = false;
+	  if(x == 23 && y ==  378)
+		  Board.BL = false; 
+	  
+  }
   public boolean isValidDest(int x, int y)
   { 
 	// is the new location within play area and not a wall
